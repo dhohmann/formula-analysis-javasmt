@@ -1,0 +1,9 @@
+license:
+  name: lgpl
+  version: 3
+program:
+  name: Formula-Analysis-JavaSMT Lib
+  description: Library to analyze propositional formulas with JavaSMT.
+  authors: Sebastian Krieter
+  url: https://github.com/skrieter/formula-analysis-javasmt
+  year: 2021
