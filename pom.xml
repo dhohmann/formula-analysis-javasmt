@@ -20,6 +20,42 @@
 		<project.dependency.path>${project.build.directory}/${project.dependency.relativepath}</project.dependency.path>
 	</properties>
 
+	<profiles>
+		<profile>
+			<id>os-unix</id>
+			<activation>
+				<os>
+					<family>Unix</family>
+				</os>
+			</activation>
+			<properties>
+				<lib.type>so</lib.type>
+			</properties>
+		</profile>
+		<profile>
+			<id>os-windows</id>
+			<activation>
+				<os>
+					<family>Windows</family>
+				</os>
+			</activation>
+			<properties>
+				<lib.type>dll</lib.type>
+			</properties>
+		</profile>
+		<profile>
+			<id>os-mac</id>
+			<activation>
+				<os>
+					<family>Mac</family>
+				</os>
+			</activation>
+			<properties>
+				<lib.type>dylib</lib.type>
+			</properties>
+		</profile>
+	</profiles>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.spldev</groupId>
@@ -48,7 +84,7 @@
 			<artifactId>javasmt-solver-mathsat5</artifactId>
 			<version>5.6.6</version>
 			<classifier>libmathsat5j</classifier>
-			<type>so</type>
+			<type>${lib.type}</type>
 		</dependency>
 
 		<!-- Z3 has three dependencies (on Linux) -->
@@ -63,14 +99,14 @@
 			<groupId>org.sosy-lab</groupId>
 			<artifactId>javasmt-solver-z3</artifactId>
 			<version>4.8.10</version>
-			<type>so</type>
+			<type>${lib.type}</type>
 			<classifier>libz3</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.sosy-lab</groupId>
 			<artifactId>javasmt-solver-z3</artifactId>
 			<version>4.8.10</version>
-			<type>so</type>
+			<type>${lib.type}</type>
 			<classifier>libz3java</classifier>
 		</dependency>
 
@@ -79,21 +115,21 @@
 			<groupId>org.sosy-lab</groupId>
 			<artifactId>javasmt-solver-boolector</artifactId>
 			<version>3.2.1-30-g95859db8</version>
-			<type>so</type>
+			<type>${lib.type}</type>
 			<classifier>libboolector</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.sosy-lab</groupId>
 			<artifactId>javasmt-solver-boolector</artifactId>
 			<version>3.2.1-30-g95859db8</version>
-			<type>so</type>
+			<type>${lib.type}</type>
 			<classifier>libminisat</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.sosy-lab</groupId>
 			<artifactId>javasmt-solver-boolector</artifactId>
 			<version>3.2.1-30-g95859db8</version>
-			<type>so</type>
+			<type>${lib.type}</type>
 			<classifier>libpicosat</classifier>
 		</dependency>
 
@@ -109,21 +145,21 @@
 			<groupId>org.sosy-lab</groupId>
 			<artifactId>javasmt-solver-cvc4</artifactId>
 			<version>1.8-prerelease-2020-06-24-g7825d8f28</version>
-			<type>so</type>
+			<type>${lib.type}</type>
 			<classifier>libcvc4</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.sosy-lab</groupId>
 			<artifactId>javasmt-solver-cvc4</artifactId>
 			<version>1.8-prerelease-2020-06-24-g7825d8f28</version>
-			<type>so</type>
+			<type>${lib.type}</type>
 			<classifier>libcvc4jni</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.sosy-lab</groupId>
 			<artifactId>javasmt-solver-cvc4</artifactId>
 			<version>1.8-prerelease-2020-06-24-g7825d8f28</version>
-			<type>so</type>
+			<type>${lib.type}</type>
 			<classifier>libcvc4parser</classifier>
 		</dependency>
 	</dependencies>
@@ -200,71 +236,71 @@
 						<artifactItem>
 							<groupId>org.sosy-lab</groupId>
 							<artifactId>javasmt-solver-mathsat5</artifactId>
-							<type>so</type>
+							<type>${lib.type}</type>
 							<classifier>libmathsat5j</classifier>
-							<destFileName>libmathsat5j.so</destFileName>
+							<destFileName>libmathsat5j.${lib.type}</destFileName>
 						</artifactItem>
 
 						<!-- Z3 has two native libraries -->
 						<artifactItem>
 							<groupId>org.sosy-lab</groupId>
 							<artifactId>javasmt-solver-z3</artifactId>
-							<type>so</type>
+							<type>${lib.type}</type>
 							<classifier>libz3java</classifier>
-							<destFileName>libz3java.so</destFileName>
+							<destFileName>libz3java.${lib.type}</destFileName>
 						</artifactItem>
 						<artifactItem>
 							<groupId>org.sosy-lab</groupId>
 							<artifactId>javasmt-solver-z3</artifactId>
-							<type>so</type>
+							<type>${lib.type}</type>
 							<classifier>libz3</classifier>
-							<destFileName>libz3.so</destFileName>
+							<destFileName>libz3.${lib.type}</destFileName>
 						</artifactItem>
 
 						<!-- Boolector has three dependencies (on Linux) -->
 						<artifactItem>
 							<groupId>org.sosy-lab</groupId>
 							<artifactId>javasmt-solver-boolector</artifactId>
-							<type>so</type>
+							<type>${lib.type}</type>
 							<classifier>libboolector</classifier>
-							<destFileName>libboolector.so</destFileName>
+							<destFileName>libboolector.${lib.type}</destFileName>
 						</artifactItem>
 						<artifactItem>
 							<groupId>org.sosy-lab</groupId>
 							<artifactId>javasmt-solver-boolector</artifactId>
-							<type>so</type>
+							<type>${lib.type}</type>
 							<classifier>libminisat</classifier>
-							<destFileName>libminisat.so</destFileName>
+							<destFileName>libminisat.${lib.type}</destFileName>
 						</artifactItem>
 						<artifactItem>
 							<groupId>org.sosy-lab</groupId>
 							<artifactId>javasmt-solver-boolector</artifactId>
-							<type>so</type>
+							<type>${lib.type}</type>
 							<classifier>libpicosat</classifier>
-							<destFileName>libpicosat.so</destFileName>
+							<destFileName>libpicosat.${lib.type}</destFileName>
 						</artifactItem>
 
 						<!-- CVC4 has four dependencies (on Linux), and renaming the JAR file is not required -->
 						<artifactItem>
 							<groupId>org.sosy-lab</groupId>
 							<artifactId>javasmt-solver-cvc4</artifactId>
-							<type>so</type>
+							<type>${lib.type}</type>
 							<classifier>libcvc4</classifier>
-							<destFileName>libcvc4.so</destFileName>
+							<destFileName>libcvc4.${lib.type}</destFileName>
 						</artifactItem>
 						<artifactItem>
 							<groupId>org.sosy-lab</groupId>
 							<artifactId>javasmt-solver-cvc4</artifactId>
-							<type>so</type>
+							<type>${lib.type}</type>
 							<classifier>libcvc4jni</classifier>
-							<destFileName>libcvc4jni.so</destFileName>
+							<destFileName>libcvc4jni.${lib.type}</destFileName>
 						</artifactItem>
 						<artifactItem>
 							<groupId>org.sosy-lab</groupId>
 							<artifactId>javasmt-solver-cvc4</artifactId>
-							<type>so</type>
+							<type>${lib.type}</type>
 							<classifier>libcvc4parser</classifier>
-							<destFileName>libcvc4parser.so</destFileName>
+							<destFileName>libcvc4parser.${lib.type}</destFileName>
 						</artifactItem>
 
 					</artifactItems>
@@ -278,6 +314,21 @@
 				<executions>
 					<execution>
 						<phase>none</phase>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-help-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<id>show-profiles</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>active-profiles</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
