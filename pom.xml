@@ -187,7 +187,6 @@
 									the solver binaries. See maven-dependency-plugin below for more information. -->
 								<addClasspath>true</addClasspath>
 								<classpathPrefix>${project.dependency.relativepath}</classpathPrefix>
-								<mainClass>org.sosy_lab.java_smt_example.SolverOverviewTable</mainClass>
 							</manifest>
 						</archive>
 					</configuration>

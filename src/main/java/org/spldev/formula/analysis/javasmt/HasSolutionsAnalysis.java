@@ -22,29 +22,28 @@
  */
 package org.spldev.formula.analysis.javasmt;
 
-import org.sosy_lab.java_smt.SolverContextFactory.*;
-import org.spldev.formula.analysis.*;
-import org.spldev.formula.expression.*;
+import org.spldev.formula.solver.SatSolver.*;
 import org.spldev.formula.solver.javasmt.*;
+import org.spldev.util.data.*;
+import org.spldev.util.job.*;
 
 /**
- * Base class for analyses using a {@link JavaSmtSolver}.
- *
- * @param <T> Type of the analysis result.
- *
- * @author Joshua Sprey
+ * Counts the number of valid solutions to a formula.
+ * 
  * @author Sebastian Krieter
  */
-public abstract class JavaSmtSolverAnalysis<T> extends AbstractAnalysis<T, JavaSmtSolver, Formula> {
+public class HasSolutionsAnalysis extends JavaSmtSolverAnalysis<SatResult> {
 
-	public JavaSmtSolverAnalysis() {
-		super();
-		solverInputProvider = FormulaProvider.empty();
+	public static final Identifier<SatResult> identifier = new Identifier<>();
+
+	@Override
+	public Identifier<SatResult> getIdentifier() {
+		return identifier;
 	}
 
 	@Override
-	protected JavaSmtSolver createSolver(Formula input) {
-		return new JavaSmtSolver(input, Solvers.SMTINTERPOL);
+	protected SatResult analyze(JavaSmtSolver solver, InternalMonitor monitor) throws Exception {
+		return solver.hasSolution();
 	}
 
 }

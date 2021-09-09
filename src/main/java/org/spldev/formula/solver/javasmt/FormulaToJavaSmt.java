@@ -76,15 +76,15 @@ public class FormulaToJavaSmt {
 
 	public BooleanFormula nodeToFormula(Expression node) {
 		if (node instanceof Not) {
-			return handleNotNode((Not) node);
+			return createNot(nodeToFormula(node.getChildren().get(0)));
 		} else if (node instanceof Or) {
-			return handleOrNode((Or) node);
+			return createOr(getChildren(node));
 		} else if (node instanceof And) {
-			return handleAndNode((And) node);
+			return createAnd(getChildren(node));
 		} else if (node instanceof Biimplies) {
-			return handleEqualsNode((Biimplies) node);
+			return createBiimplies(nodeToFormula(node.getChildren().get(0)), nodeToFormula(node.getChildren().get(1)));
 		} else if (node instanceof Implies) {
-			return handleImpliesNode((Implies) node);
+			return createImplies(nodeToFormula(node.getChildren().get(0)), nodeToFormula(node.getChildren().get(1)));
 		} else if (node instanceof Literal) {
 			return handleLiteralNode((Literal) node);
 		} else if (node instanceof LessThan) {
@@ -102,16 +102,39 @@ public class FormulaToJavaSmt {
 		}
 	}
 
-	private BooleanFormula handleAndNode(And node) {
-		return currentBooleanFormulaManager.and( //
-			node.getChildren().stream() //
-				.map(this::nodeToFormula) //
-				.collect(Collectors.toList()));
+	private List<BooleanFormula> getChildren(Expression node) {
+		return node.getChildren().stream() //
+			.map(this::nodeToFormula) //
+			.collect(Collectors.toList());
+	}
+
+	public BooleanFormula createAnd(List<BooleanFormula> collect) {
+		return currentBooleanFormulaManager.and(collect);
+	}
+
+	public BooleanFormula createImplies(final BooleanFormula leftChild, final BooleanFormula rightChild) {
+		return currentBooleanFormulaManager.implication(leftChild, rightChild);
+	}
+
+	public BooleanFormula createBiimplies(final BooleanFormula leftChild, final BooleanFormula rightChild) {
+		return currentBooleanFormulaManager.equivalence(leftChild, rightChild);
+	}
+
+	public BooleanFormula createOr(List<BooleanFormula> collect) {
+		return currentBooleanFormulaManager.or(collect);
+	}
+
+	public BooleanFormula createNot(final BooleanFormula childFormula) {
+		return currentBooleanFormulaManager.not(childFormula);
 	}
 
 	private BooleanFormula handleEqualNode(Equals<?> node) {
 		final NumeralFormula leftTerm = termToFormula(node.getChildren().get(0));
 		final NumeralFormula rightTerm = termToFormula(node.getChildren().get(1));
+		return createEqual(leftTerm, rightTerm);
+	}
+
+	public BooleanFormula createEqual(final NumeralFormula leftTerm, final NumeralFormula rightTerm) {
 		if (((leftTerm instanceof RationalFormula) || (rightTerm instanceof RationalFormula)) && !isPrincess) {
 			return currentRationalFormulaManager.equal(leftTerm, rightTerm);
 		} else {
@@ -122,6 +145,10 @@ public class FormulaToJavaSmt {
 	private BooleanFormula handleGreaterEqualNode(GreaterEqual<?> node) {
 		final NumeralFormula leftTerm = termToFormula(node.getChildren().get(0));
 		final NumeralFormula rightTerm = termToFormula(node.getChildren().get(1));
+		return createGreaterEqual(leftTerm, rightTerm);
+	}
+
+	public BooleanFormula createGreaterEqual(final NumeralFormula leftTerm, final NumeralFormula rightTerm) {
 		if (((leftTerm instanceof RationalFormula) || (rightTerm instanceof RationalFormula)) && !isPrincess) {
 			return currentRationalFormulaManager.greaterOrEquals(leftTerm, rightTerm);
 		} else {
@@ -132,6 +159,10 @@ public class FormulaToJavaSmt {
 	private BooleanFormula handleLessEqualNode(LessEqual<?> node) {
 		final NumeralFormula leftTerm = termToFormula(node.getChildren().get(0));
 		final NumeralFormula rightTerm = termToFormula(node.getChildren().get(1));
+		return createLessEqual(leftTerm, rightTerm);
+	}
+
+	public BooleanFormula createLessEqual(final NumeralFormula leftTerm, final NumeralFormula rightTerm) {
 		if (((leftTerm instanceof RationalFormula) || (rightTerm instanceof RationalFormula)) && !isPrincess) {
 			return currentRationalFormulaManager.lessOrEquals(leftTerm, rightTerm);
 		} else {
@@ -142,6 +173,10 @@ public class FormulaToJavaSmt {
 	private BooleanFormula handleGreaterThanNode(GreaterThan<?> node) {
 		final NumeralFormula leftTerm = termToFormula(node.getChildren().get(0));
 		final NumeralFormula rightTerm = termToFormula(node.getChildren().get(1));
+		return createGreaterThan(leftTerm, rightTerm);
+	}
+
+	public BooleanFormula createGreaterThan(final NumeralFormula leftTerm, final NumeralFormula rightTerm) {
 		if (((leftTerm instanceof RationalFormula) || (rightTerm instanceof RationalFormula)) && !isPrincess) {
 			return currentRationalFormulaManager.greaterThan(leftTerm, rightTerm);
 		} else {
@@ -152,6 +187,10 @@ public class FormulaToJavaSmt {
 	private BooleanFormula handleLessThanNode(LessThan<?> node) {
 		final NumeralFormula leftTerm = termToFormula(node.getChildren().get(0));
 		final NumeralFormula rightTerm = termToFormula(node.getChildren().get(1));
+		return createLessThan(leftTerm, rightTerm);
+	}
+
+	public BooleanFormula createLessThan(final NumeralFormula leftTerm, final NumeralFormula rightTerm) {
 		if (((leftTerm instanceof RationalFormula) || (rightTerm instanceof RationalFormula)) && !isPrincess) {
 			return currentRationalFormulaManager.lessThan(leftTerm, rightTerm);
 		} else {
@@ -159,34 +198,9 @@ public class FormulaToJavaSmt {
 		}
 	}
 
-	private BooleanFormula handleImpliesNode(Implies node) {
-		final BooleanFormula leftChild = nodeToFormula(node.getChildren().get(0));
-		final BooleanFormula rightChild = nodeToFormula(node.getChildren().get(1));
-		return currentBooleanFormulaManager.implication(leftChild, rightChild);
-	}
-
-	private BooleanFormula handleEqualsNode(Biimplies node) {
-		final BooleanFormula leftChild = nodeToFormula(node.getChildren().get(0));
-		final BooleanFormula rightChild = nodeToFormula(node.getChildren().get(1));
-		return currentBooleanFormulaManager.equivalence(leftChild, rightChild);
-	}
-
-	private BooleanFormula handleOrNode(Or node) {
-		return currentBooleanFormulaManager.or( //
-			node.getChildren().stream() //
-				.map(this::nodeToFormula) //
-				.collect(Collectors.toList()));
-	}
-
-	private BooleanFormula handleNotNode(Not notNode) {
-		final BooleanFormula childFormula = nodeToFormula(notNode.getChildren().get(0));
-		return currentBooleanFormulaManager.not(childFormula);
-	}
-
 	private NumeralFormula termToFormula(Term<?> term) {
 		if (term instanceof Constant<?>) {
-			final Constant<?> constant = (Constant<?>) term;
-			return handleConstant(constant);
+			return createConstant(((Constant<?>) term).getValue());
 		} else if (term instanceof Variable<?>) {
 			final Variable<?> variable = (Variable<?>) term;
 			return handleVariable(variable);
@@ -213,8 +227,8 @@ public class FormulaToJavaSmt {
 			} else if (function instanceof Multiply) {
 				return currentRationalFormulaManager.multiply(childs[0], childs[1]);
 			} else {
-				throw new RuntimeException("The given function is not supported by JavaSMT Rational Numbers: "
-					+ function.getClass());
+				throw new RuntimeException(
+					"The given function is not supported by JavaSMT Rational Numbers: " + function.getClass());
 			}
 		} else if (function.getType() == Long.class) {
 			if (function instanceof Add) {
@@ -222,30 +236,30 @@ public class FormulaToJavaSmt {
 			} else if (function instanceof Multiply) {
 				return currentIntegerFormulaManager.multiply((IntegerFormula) childs[0], (IntegerFormula) childs[1]);
 			} else {
-				throw new RuntimeException("The given function is not supported by JavaSMT Rational Numbers: "
-					+ function.getClass());
+				throw new RuntimeException(
+					"The given function is not supported by JavaSMT Rational Numbers: " + function.getClass());
 			}
 		} else {
 			throw new UnsupportedOperationException("Unkown function type: " + function.getType());
 		}
 	}
 
-	private NumeralFormula handleConstant(Constant<?> constant) {
-		if (constant.getValue() instanceof Long) {
-			return currentIntegerFormulaManager.makeNumber((Long) constant.getValue());
-		} else {
-			if (!isPrincess) {
+	public NumeralFormula createConstant(Object value) {
+		if (value instanceof Long) {
+			return currentIntegerFormulaManager.makeNumber((long) value);
+		} else if (value instanceof Double) {
+			if (isPrincess) {
 				throw new UnsupportedOperationException("Princess does not support constants from type: Double");
 			}
-			return currentRationalFormulaManager.makeNumber((double) constant.getValue());
+			return currentRationalFormulaManager.makeNumber((double) value);
+		} else {
+			throw new UnsupportedOperationException("Unkown constant type: " + value.getClass());
 		}
 	}
 
 	private NumeralFormula handleVariable(Variable<?> variable) {
 		final String name = variable.getName();
-		final Optional<Formula> map = variableMapping
-			.getIndex(name)
-			.map(variables::get);
+		final Optional<Formula> map = variableMapping.getIndex(name).map(variables::get);
 		if (variable.getType() == Double.class) {
 			if (isPrincess) {
 				throw new UnsupportedOperationException("Princess does not support variables from type: Double");
@@ -265,20 +279,15 @@ public class FormulaToJavaSmt {
 			return currentBooleanFormulaManager.makeFalse();
 		} else {
 			final String name = literal.getName();
-			final BooleanFormula variable = (BooleanFormula) variableMapping
-				.getIndex(name)
-				.map(variables::get)
+			final BooleanFormula variable = (BooleanFormula) variableMapping.getIndex(name).map(variables::get)
 				.orElseGet(() -> newVariable(name, currentBooleanFormulaManager::makeVariable));
-			return literal.isPositive()
-				? variable
-				: currentBooleanFormulaManager.not(variable);
+			return literal.isPositive() ? variable : createNot(variable);
 		}
 	}
 
 	private <T extends Formula> T newVariable(final String name,
 		java.util.function.Function<String, T> variableCreator) {
 		if (createVariables) {
-
 			final Integer index = variableMapping.getIndex(name).orElseThrow(RuntimeException::new);
 			final T newVariable = variableCreator.apply(name);
 			while (variables.size() <= index) {

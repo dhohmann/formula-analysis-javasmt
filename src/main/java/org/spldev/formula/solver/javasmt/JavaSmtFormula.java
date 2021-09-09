@@ -37,7 +37,7 @@ import org.spldev.formula.solver.*;
  *
  * @author Sebastian Krieter
  */
-public class JavaSmtFormula extends AbstractDynamicFormula<org.spldev.formula.expression.Formula, BooleanFormula> {
+public class JavaSmtFormula extends AbstractDynamicFormula<BooleanFormula> {
 
 	private final ArrayList<Formula> variables;
 	private final FormulaToJavaSmt translator;
@@ -57,29 +57,30 @@ public class JavaSmtFormula extends AbstractDynamicFormula<org.spldev.formula.ex
 		variables = translator.getVariables();
 	}
 
+	public FormulaToJavaSmt getTranslator() {
+		return translator;
+	}
+
 	public List<Formula> getVariables() {
 		return variables;
 	}
 
 	public List<BooleanFormula> getBooleanVariables() {
-		return variables.stream()
-			.filter(f -> f instanceof BooleanFormula)
-			.map(f -> (BooleanFormula) f)
+		return variables.stream().filter(f -> f instanceof BooleanFormula).map(f -> (BooleanFormula) f)
 			.collect(Collectors.toList());
 	}
 
 	@Override
-	public BooleanFormula push(org.spldev.formula.expression.Formula clause) throws RuntimeContradictionException {
+	public List<BooleanFormula> push(org.spldev.formula.expression.Formula clause)
+		throws RuntimeContradictionException {
 		final BooleanFormula constraint = translator.nodeToFormula(clause);
 		constraints.add(constraint);
-		originClauses.add(clause);
-		return constraint;
+		return Arrays.asList(constraint);
 	}
 
 	@Override
 	public void clear() {
 		constraints.clear();
-		originClauses.clear();
 	}
 
 }

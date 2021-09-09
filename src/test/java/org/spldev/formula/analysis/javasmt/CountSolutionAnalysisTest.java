@@ -33,25 +33,30 @@ import org.spldev.formula.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
-import org.spldev.formula.expression.io.*;
 import org.spldev.formula.expression.term.bool.*;
 import org.spldev.util.*;
 import org.spldev.util.extension.*;
-import org.spldev.util.io.*;
 import org.spldev.util.logging.*;
 
 public class CountSolutionAnalysisTest {
-	static {
-		ExtensionLoader.load();
-	}
-	private final static Path modelDirectory = Paths.get("src/test/resources/testFeatureModels");
 
-	private final List<String> modelNames = Arrays.asList( //
+	private static final Path modelDirectory = Paths.get("src/test/resources/testFeatureModels");
+
+	private static final List<String> modelNames = Arrays.asList( //
 		"basic", //
 		"simple", //
 		"car", //
-		"gpl_medium_model",
+		"gpl_medium_model", //
 		"500-100");
+
+	private static ModelRepresentation load(final Path modelFile) {
+		return ModelRepresentation.load(modelFile) //
+			.orElseThrow(p -> new IllegalArgumentException(p.isEmpty() ? null : p.get(0).getError().get()));
+	}
+
+	static {
+		ExtensionLoader.load();
+	}
 
 	@Test
 	public void count() {
@@ -66,7 +71,7 @@ public class CountSolutionAnalysisTest {
 		final And and = new And(equals, c);
 		final Implies formula = new Implies(or, and);
 
-		final Formula cnfFormula = Formulas.toCNF(formula);
+		final Formula cnfFormula = Formulas.toCNF(formula).get();
 		final ModelRepresentation rep = new ModelRepresentation(cnfFormula);
 
 		final CountSolutionsAnalysis analysis = new CountSolutionsAnalysis();
@@ -85,12 +90,6 @@ public class CountSolutionAnalysisTest {
 		result.orElse(Logger::logProblems);
 		assertTrue(result.isPresent());
 		assertEquals(BigInteger.valueOf(960), result.get());
-	}
-
-	private static ModelRepresentation load(final Path modelFile) {
-		return FileHandler.load(modelFile, FormulaFormatManager.getInstance()) //
-			.map(ModelRepresentation::new) //
-			.orElseThrow(p -> new IllegalArgumentException(p.isEmpty() ? null : p.get(0).getError().get()));
 	}
 
 }
