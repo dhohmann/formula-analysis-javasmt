@@ -42,10 +42,10 @@ public class JavaSmtFormula extends AbstractDynamicFormula<BooleanFormula> {
 	private final ArrayList<Formula> variables;
 	private final FormulaToJavaSmt translator;
 
-	public JavaSmtFormula(SolverContext solverContext, org.spldev.formula.expression.Formula orignalFormula) {
-		this(solverContext, VariableMap.fromExpression(orignalFormula));
-		if (orignalFormula instanceof And) {
-			for (final Expression clause : orignalFormula.getChildren()) {
+	public JavaSmtFormula(SolverContext solverContext, org.spldev.formula.expression.Formula originalFormula) {
+		this(solverContext, VariableMap.fromExpression(originalFormula));
+		if (originalFormula instanceof And) {
+			for (final Expression clause : originalFormula.getChildren()) {
 				push((org.spldev.formula.expression.Formula) clause);
 			}
 		}

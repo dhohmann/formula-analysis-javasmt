@@ -62,7 +62,7 @@ public class JavaSmtSolver
 	}
 
 	/**
-	 * The current contex of the solver. Used by the translator to translate prop4J
+	 * The current context of the solver. Used by the translator to translate prop4J
 	 * nodes to JavaSMT formulas.
 	 */
 	public SolverContext context;

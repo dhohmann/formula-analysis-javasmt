@@ -213,34 +213,34 @@ public class FormulaToJavaSmt {
 	}
 
 	private NumeralFormula handleFunction(Function<?, ?> function) {
-		final NumeralFormula[] childs = new NumeralFormula[function.getChildren().size()];
+		final NumeralFormula[] children = new NumeralFormula[function.getChildren().size()];
 		int index = 0;
 		for (final Term<?> term : function.getChildren()) {
-			childs[index++] = termToFormula(term);
+			children[index++] = termToFormula(term);
 		}
 		if (function.getType() == Double.class) {
 			if (isPrincess) {
 				throw new UnsupportedOperationException("Princess does not support variables from type: Double");
 			}
 			if (function instanceof Add) {
-				return currentRationalFormulaManager.add(childs[0], childs[1]);
+				return currentRationalFormulaManager.add(children[0], children[1]);
 			} else if (function instanceof Multiply) {
-				return currentRationalFormulaManager.multiply(childs[0], childs[1]);
+				return currentRationalFormulaManager.multiply(children[0], children[1]);
 			} else {
 				throw new RuntimeException(
 					"The given function is not supported by JavaSMT Rational Numbers: " + function.getClass());
 			}
 		} else if (function.getType() == Long.class) {
 			if (function instanceof Add) {
-				return currentIntegerFormulaManager.add((IntegerFormula) childs[0], (IntegerFormula) childs[1]);
+				return currentIntegerFormulaManager.add((IntegerFormula) children[0], (IntegerFormula) children[1]);
 			} else if (function instanceof Multiply) {
-				return currentIntegerFormulaManager.multiply((IntegerFormula) childs[0], (IntegerFormula) childs[1]);
+				return currentIntegerFormulaManager.multiply((IntegerFormula) children[0], (IntegerFormula) children[1]);
 			} else {
 				throw new RuntimeException(
 					"The given function is not supported by JavaSMT Rational Numbers: " + function.getClass());
 			}
 		} else {
-			throw new UnsupportedOperationException("Unkown function type: " + function.getType());
+			throw new UnsupportedOperationException("Unknown function type: " + function.getType());
 		}
 	}
 
@@ -253,7 +253,7 @@ public class FormulaToJavaSmt {
 			}
 			return currentRationalFormulaManager.makeNumber((double) value);
 		} else {
-			throw new UnsupportedOperationException("Unkown constant type: " + value.getClass());
+			throw new UnsupportedOperationException("Unknown constant type: " + value.getClass());
 		}
 	}
 
@@ -268,7 +268,7 @@ public class FormulaToJavaSmt {
 		} else if (variable.getType() == Long.class) {
 			return (NumeralFormula) map.orElseGet(() -> newVariable(name, currentIntegerFormulaManager::makeVariable));
 		} else {
-			throw new UnsupportedOperationException("Unkown variable type: " + variable.getType());
+			throw new UnsupportedOperationException("Unknown variable type: " + variable.getType());
 		}
 	}
 
