@@ -127,7 +127,7 @@ public class JavaSmtSolver
 
 	@Override
 	public Object[] getSolution() {
-		try (OptimizationProverEnvironment prover = context.newOptimizationProverEnvironment()) {
+		try (ProverEnvironment prover = context.newProverEnvironment()) {
 			for (final BooleanFormula constraint : formula.getConstraints()) {
 				prover.addConstraint(constraint);
 			}
