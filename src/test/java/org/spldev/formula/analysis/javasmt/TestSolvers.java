@@ -32,6 +32,7 @@ import org.sosy_lab.java_smt.*;
 import org.sosy_lab.java_smt.SolverContextFactory.*;
 import org.sosy_lab.java_smt.api.*;
 import org.spldev.util.logging.*;
+import org.spldev.util.os.OSType;
 
 public class TestSolvers {
 
