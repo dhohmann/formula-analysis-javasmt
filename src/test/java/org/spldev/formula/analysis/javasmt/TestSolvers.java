@@ -32,18 +32,44 @@ import org.sosy_lab.java_smt.*;
 import org.sosy_lab.java_smt.SolverContextFactory.*;
 import org.sosy_lab.java_smt.api.*;
 import org.spldev.util.logging.*;
+import org.spldev.util.os.OSType;
 
 public class TestSolvers {
+
+	private void solversWindows() {
+		testAvailability(Solvers.MATHSAT5);
+		testAvailability(Solvers.PRINCESS);
+		testAvailability(Solvers.SMTINTERPOL);
+		testAvailability(Solvers.Z3);
+	}
+
+	private void solversUnix() {
+		testAvailability(Solvers.BOOLECTOR);
+		testAvailability(Solvers.CVC4);
+		testAvailability(Solvers.MATHSAT5);
+		testAvailability(Solvers.PRINCESS);
+		testAvailability(Solvers.SMTINTERPOL);
+		testAvailability(Solvers.Z3);
+	}
+
+	private void solversMac(){
+		testAvailability(Solvers.PRINCESS);
+		testAvailability(Solvers.SMTINTERPOL);
+		testAvailability(Solvers.Z3);
+	}
 
 	@Test
 	public void solvers() {
 		try {
-			testAvailability(Solvers.BOOLECTOR);
-			testAvailability(Solvers.CVC4);
-			testAvailability(Solvers.MATHSAT5);
-			testAvailability(Solvers.PRINCESS);
-			testAvailability(Solvers.SMTINTERPOL);
-			testAvailability(Solvers.Z3);
+			if(OSType.IS_UNIX){
+				solversUnix();
+			}
+			if(OSType.IS_MAC){
+				solversMac();
+			}
+			if(OSType.IS_WINDOWS){
+				solversWindows();
+			}
 		} catch (final Exception e) {
 			Logger.logError(e);
 			fail();
