@@ -234,7 +234,8 @@ public class FormulaToJavaSmt {
 			if (function instanceof Add) {
 				return currentIntegerFormulaManager.add((IntegerFormula) children[0], (IntegerFormula) children[1]);
 			} else if (function instanceof Multiply) {
-				return currentIntegerFormulaManager.multiply((IntegerFormula) children[0], (IntegerFormula) children[1]);
+				return currentIntegerFormulaManager.multiply((IntegerFormula) children[0],
+					(IntegerFormula) children[1]);
 			} else {
 				throw new RuntimeException(
 					"The given function is not supported by JavaSMT Rational Numbers: " + function.getClass());

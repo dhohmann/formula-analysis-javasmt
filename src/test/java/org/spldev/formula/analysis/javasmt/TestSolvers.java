@@ -52,7 +52,7 @@ public class TestSolvers {
 		testAvailability(Solvers.Z3);
 	}
 
-	private void solversMac(){
+	private void solversMac() {
 		testAvailability(Solvers.PRINCESS);
 		testAvailability(Solvers.SMTINTERPOL);
 		testAvailability(Solvers.Z3);
@@ -61,13 +61,13 @@ public class TestSolvers {
 	@Test
 	public void solvers() {
 		try {
-			if(OSType.IS_UNIX){
+			if (OSType.IS_UNIX) {
 				solversUnix();
 			}
-			if(OSType.IS_MAC){
+			if (OSType.IS_MAC) {
 				solversMac();
 			}
-			if(OSType.IS_WINDOWS){
+			if (OSType.IS_WINDOWS) {
 				solversWindows();
 			}
 		} catch (final Exception e) {
