@@ -240,19 +240,4 @@ public class JavaSmtSolver
 	public VariableMap getVariables() {
 		return formula.getVariableMap();
 	}
-
-	public static void toTseitinFormula(org.spldev.formula.expression.Formula formula) {
-		try {
-			final Configuration config = Configuration.defaultConfiguration();
-			final LogManager logManager = BasicLogManager.create(config);
-			final ShutdownManager shutdownManager = ShutdownManager.create();
-			SolverContext context = SolverContextFactory.createSolverContext(config, logManager, shutdownManager
-				.getNotifier(), Solvers.Z3);
-			BooleanFormula booleanFormula = context.getFormulaManager().applyTactic(new FormulaToJavaSmt(context,
-				VariableMap.fromExpression(formula)).nodeToFormula(formula), Tactic.TSEITIN_CNF);
-			System.out.println(booleanFormula);
-		} catch (final InvalidConfigurationException | InterruptedException e) {
-			Logger.logError(e);
-		}
-	}
 }
