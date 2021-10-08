@@ -38,9 +38,8 @@ public class CNFTseytinTransformer implements Transformer {
 		final BooleanFormulaManager booleanFormulaManager = formulaManager.getBooleanFormulaManager();
 		BooleanFormula booleanFormula = formulaManager.applyTactic(new FormulaToJavaSmt(context,
 			VariableMap.fromExpression(formula)).nodeToFormula(formula), Tactic.TSEITIN_CNF);
-		org.spldev.formula.expression.Formula tseytinFormula = booleanFormulaManager.visit(booleanFormula,
+		return booleanFormulaManager.visit(booleanFormula,
 			new CNFVisitor(booleanFormulaManager));
-		return tseytinFormula;
 	}
 
 	public static class CNFVisitor extends FormulaVisitor {
