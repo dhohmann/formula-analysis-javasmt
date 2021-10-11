@@ -2,6 +2,7 @@ package org.spldev.formula.solver.javasmt;
 
 import org.sosy_lab.common.ShutdownManager;
 import org.sosy_lab.common.configuration.Configuration;
+import org.sosy_lab.common.configuration.InvalidConfigurationException;
 import org.sosy_lab.common.log.BasicLogManager;
 import org.sosy_lab.common.log.LogManager;
 import org.sosy_lab.java_smt.SolverContextFactory;
@@ -15,8 +16,6 @@ import org.spldev.formula.expression.term.Variable;
 import org.spldev.formula.expression.term.bool.BoolVariable;
 import org.spldev.formula.expression.transform.Transformer;
 import org.spldev.util.job.InternalMonitor;
-import org.spldev.util.tree.Trees;
-import org.spldev.util.tree.visitor.TreePrinter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,19 +26,32 @@ import java.util.stream.Collectors;
  * linking path.
  */
 public class CNFTseytinTransformer implements Transformer {
+	private static Configuration config;
+	private static LogManager logManager;
+	private static SolverContext context;
+	private static ShutdownManager shutdownManager;
+	private static FormulaManager formulaManager;
+	private static BooleanFormulaManager booleanFormulaManager;
+
+	static {
+		try {
+			config = Configuration.defaultConfiguration();
+			logManager = BasicLogManager.create(config);
+			shutdownManager = ShutdownManager.create();
+			context = SolverContextFactory.createSolverContext(config, logManager, shutdownManager
+				.getNotifier(), SolverContextFactory.Solvers.Z3);
+			formulaManager = context.getFormulaManager();
+			booleanFormulaManager = formulaManager.getBooleanFormulaManager();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public Formula execute(Formula formula, InternalMonitor monitor) throws Exception {
-		final Configuration config = Configuration.defaultConfiguration();
-		final LogManager logManager = BasicLogManager.create(config);
-		final ShutdownManager shutdownManager = ShutdownManager.create();
-		final SolverContext context = SolverContextFactory.createSolverContext(config, logManager, shutdownManager
-			.getNotifier(), SolverContextFactory.Solvers.Z3);
-		final FormulaManager formulaManager = context.getFormulaManager();
-		final BooleanFormulaManager booleanFormulaManager = formulaManager.getBooleanFormulaManager();
 		BooleanFormula booleanFormula = formulaManager.applyTactic(new FormulaToJavaSmt(context,
 			VariableMap.fromExpression(formula)).nodeToFormula(formula), Tactic.TSEITIN_CNF);
-		return booleanFormulaManager.visit(booleanFormula,
-			new CNFVisitor(booleanFormulaManager));
+		return booleanFormulaManager.visit(booleanFormula, new CNFVisitor(booleanFormulaManager));
 	}
 
 	public static class CNFVisitor extends FormulaVisitor {
