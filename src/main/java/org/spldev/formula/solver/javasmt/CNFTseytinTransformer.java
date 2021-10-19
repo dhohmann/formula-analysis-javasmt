@@ -52,7 +52,7 @@ public class CNFTseytinTransformer implements Transformer {
 		VariableMap variableMap = VariableMap.fromExpression(formula);
 		BooleanFormula booleanFormula = formulaManager.applyTactic(new FormulaToJavaSmt(context,
 			variableMap).nodeToFormula(formula), Tactic.TSEITIN_CNF);
-		return booleanFormulaManager.visit(booleanFormula, new CNFVisitor(booleanFormulaManager, variableMap.clone()));
+		return booleanFormulaManager.visit(booleanFormula, new CNFVisitor(booleanFormulaManager, variableMap));
 	}
 
 	public static class CNFVisitor extends FormulaVisitor {
