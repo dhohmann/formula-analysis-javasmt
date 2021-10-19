@@ -49,14 +49,15 @@ public class CNFTseytinTransformer implements Transformer {
 
 	@Override
 	public Formula execute(Formula formula, InternalMonitor monitor) throws Exception {
+		VariableMap variableMap = VariableMap.fromExpression(formula);
 		BooleanFormula booleanFormula = formulaManager.applyTactic(new FormulaToJavaSmt(context,
-			VariableMap.fromExpression(formula)).nodeToFormula(formula), Tactic.TSEITIN_CNF);
-		return booleanFormulaManager.visit(booleanFormula, new CNFVisitor(booleanFormulaManager));
+			variableMap).nodeToFormula(formula), Tactic.TSEITIN_CNF);
+		return booleanFormulaManager.visit(booleanFormula, new CNFVisitor(booleanFormulaManager, variableMap.clone()));
 	}
 
 	public static class CNFVisitor extends FormulaVisitor {
-		public CNFVisitor(BooleanFormulaManager booleanFormulaManager) {
-			super(booleanFormulaManager, VariableMap.emptyMap());
+		public CNFVisitor(BooleanFormulaManager booleanFormulaManager, VariableMap variableMap) {
+			super(booleanFormulaManager, variableMap);
 		}
 
 		@Override
