@@ -32,7 +32,7 @@ import org.sosy_lab.java_smt.*;
 import org.sosy_lab.java_smt.SolverContextFactory.*;
 import org.sosy_lab.java_smt.api.*;
 import org.spldev.util.logging.*;
-import org.spldev.util.os.OSType;
+import org.spldev.util.os.OperatingSystem;
 
 public class TestSolvers {
 
@@ -61,13 +61,13 @@ public class TestSolvers {
 	@Test
 	public void solvers() {
 		try {
-			if (OSType.IS_UNIX) {
+			if (OperatingSystem.IS_UNIX) {
 				solversUnix();
 			}
-			if (OSType.IS_MAC) {
+			if (OperatingSystem.IS_MAC) {
 				solversMac();
 			}
-			if (OSType.IS_WINDOWS) {
+			if (OperatingSystem.IS_WINDOWS) {
 				solversWindows();
 			}
 		} catch (final Exception e) {
