@@ -21,11 +21,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Transforms a formula into CNF using the Tseytin transformation implemented in
+ * Transforms a formula into CNF using the Tseitin transformation implemented in
  * Z3. Requires Z3 to be installed and libz3/libz3java to be in Java's dynamic
  * linking path.
  */
-public class CNFTseytinTransformer implements Transformer {
+public class CNFTseitinTransformer implements Transformer {
 	private static Configuration config;
 	private static LogManager logManager;
 	private static SolverContext context;
