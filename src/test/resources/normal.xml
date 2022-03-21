@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<featureModel>
+    <properties>
+        <graphics key="autolayoutconstraints" value="false"/>
+        <graphics key="legendautolayout" value="true"/>
+        <graphics key="showshortnames" value="false"/>
+        <graphics key="layout" value="horizontal"/>
+        <graphics key="showcollapsedconstraints" value="true"/>
+        <graphics key="legendhidden" value="false"/>
+        <graphics key="layoutalgorithm" value="1"/>
+    </properties>
+    <struct>
+        <and mandatory="true" name="Webserver">
+            <graphics key="collapsed" value="false"/>
+            <and mandatory="true" name="Protokoll">
+                <feature name="HTTP"/>
+                <feature name="HTTPS"/>
+                <feature name="File"/>
+            </and>
+            <or name="Scriptsprachen">
+                <feature name="PHP"/>
+                <feature name="JSP"/>
+            </or>
+            <alt name="Datenbank">
+                <graphics key="collapsed" value="false"/>
+                <feature name="MySQL">
+                </feature>
+                <feature name="PostgreSQL">
+                </feature>
+            </alt>
+            <feature name="SSL">
+            </feature>
+            <and mandatory="true" name="Generierung">
+                <graphics key="collapsed" value="false"/>
+                <feature name="Dynamisch"/>
+                <and name="Statisch">
+                    <feature name="Dateisystem">
+                    </feature>
+                    <feature name="WAR">
+                    </feature>
+                </and>
+            </and>
+        </and>
+    </struct>
+    <constraints>
+        <rule>
+            <imp>
+                <not>
+                    <disj>
+                        <var>HTTP</var>
+                        <var>HTTPS</var>
+                    </disj>
+                </not>
+                <var>File</var>
+            </imp>
+        </rule>
+        <rule>
+            <imp>
+                <var>File</var>
+                <var>Dateisystem</var>
+            </imp>
+        </rule>
+    </constraints>
+</featureModel>

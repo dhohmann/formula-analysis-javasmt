@@ -34,6 +34,8 @@ import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.atomic.predicate.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.term.*;
+import org.spldev.formula.expression.term.attribute.Average;
+import org.spldev.formula.expression.term.attribute.Product;
 import org.spldev.formula.expression.term.attribute.Sum;
 
 /**
@@ -230,22 +232,13 @@ public class FormulaToJavaSmt {
             } else if (function instanceof Divide) {
                 return currentRationalFormulaManager.divide(children[0], children[1]);
             } else if (function instanceof Sum) {
-                int i = 0;
-                NumeralFormula prev = null;
-                while (i < children.length - 1) {
-                    NumeralFormula l = children[i];
-                    NumeralFormula r = null;
-                    if (prev == null) {
-                        prev = l;
-                    } else if ((i + 1) < children.length) {
-                        r = children[i + 1];
-                    }
-                    if (prev != null & r != null) {
-                        prev = currentRationalFormulaManager.add(prev, r);
-                    }
-                    i += 2;
-                }
-                return prev;
+                return createSum(children, true);
+            } else if (function instanceof Product) {
+                return createProduct(children, true);
+            } else if(function instanceof Average){
+                final Integer countIndex = variableMapping.getIndex("count").orElseThrow(RuntimeException::new);
+                NumeralFormula count = (NumeralFormula) variables.get(countIndex);
+                return currentRationalFormulaManager.divide(createSum(children, true), count);
             } else {
                 throw new RuntimeException(
                         "The given function is not supported by JavaSMT Rational Numbers: " + function.getClass());
@@ -258,24 +251,14 @@ public class FormulaToJavaSmt {
                         (IntegerFormula) children[1]);
             } else if (function instanceof Divide) {
                 return currentIntegerFormulaManager.divide((IntegerFormula) children[0], (IntegerFormula) children[1]);
-
             } else if (function instanceof Sum) {
-                int i = 0;
-                IntegerFormula prev = null;
-                while (i < children.length - 1) {
-                    IntegerFormula l = (IntegerFormula) children[i];
-                    IntegerFormula r = null;
-                    if (prev == null) {
-                        prev = l;
-                    } else if ((i + 1) < children.length) {
-                        r = (IntegerFormula) children[i + 1];
-                    }
-                    if (prev != null & r != null) {
-                        prev = currentIntegerFormulaManager.add(prev, r);
-                    }
-                    i += 2;
-                }
-                return prev;
+                return createSum(children, false);
+            } else if (function instanceof Product) {
+                return createProduct(children, false);
+            } else if(function instanceof Average){
+                final Integer countIndex = variableMapping.getIndex("count").orElseThrow(RuntimeException::new);
+                IntegerFormula count = (IntegerFormula) variables.get(countIndex);
+                return currentIntegerFormulaManager.divide((IntegerFormula) createSum(children, false), count);
             } else {
                 throw new RuntimeException(
                         "The given function is not supported by JavaSMT Rational Numbers: " + function.getClass());
@@ -283,6 +266,58 @@ public class FormulaToJavaSmt {
         } else {
             throw new UnsupportedOperationException("Unknown function type: " + function.getType());
         }
+    }
+
+    public NumeralFormula createSum(NumeralFormula[] children, boolean rational){
+        if(children.length == 0){
+            throw new RuntimeException();
+        }
+
+        int i = 0;
+        NumeralFormula prev = null;
+        while (i < children.length) {
+            NumeralFormula r = null;
+            if (prev == null) {
+                prev = children[i++];
+            }
+            if (i <= children.length - 1) {
+                r = children[i++];
+            }
+            if (prev != null & r != null) {
+                if(rational){
+                    prev = currentRationalFormulaManager.add(prev, r);
+                } else {
+                    prev = currentIntegerFormulaManager.add((IntegerFormula) prev, (IntegerFormula) r);
+                }
+            }
+        }
+        return prev;
+    }
+
+    public NumeralFormula createProduct(NumeralFormula[] children, boolean rational){
+        if(children.length == 0){
+            throw new RuntimeException();
+        }
+
+        int i = 0;
+        NumeralFormula prev = null;
+        while (i < children.length) {
+            NumeralFormula r = null;
+            if (prev == null) {
+                prev = children[i++];
+            }
+            if (i <= children.length - 1) {
+                r = children[i++];
+            }
+            if (prev != null & r != null) {
+                if(rational){
+                    prev = currentRationalFormulaManager.multiply(prev, r);
+                } else {
+                    prev = currentIntegerFormulaManager.multiply((IntegerFormula) prev, (IntegerFormula) r);
+                }
+            }
+        }
+        return prev;
     }
 
     public NumeralFormula createConstant(Object value) {

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<extendedFeatureModel>
+    <properties>
+        <graphics key="autolayoutconstraints" value="false"/>
+        <graphics key="legendautolayout" value="true"/>
+        <graphics key="showshortnames" value="false"/>
+        <graphics key="layout" value="horizontal"/>
+        <graphics key="showcollapsedconstraints" value="true"/>
+        <graphics key="legendhidden" value="false"/>
+        <graphics key="layoutalgorithm" value="1"/>
+    </properties>
+    <struct>
+        <and mandatory="true" name="Webserver">
+            <attribute name="Latenz" type="long" unit="ms" value="10"/>
+            <attribute name="MAnf" type="long" unit="" value="1000000"/>
+            <and mandatory="true" name="Protokoll">
+                <feature name="HTTP">
+                    <attribute name="protocolDouble" type="double" value="1.1"/>
+                </feature>
+                <feature name="HTTPS">
+                    <attribute name="protocolDouble" type="double" value="0.1"/>
+                </feature>
+                <feature name="File">
+                    <attribute name="protocolDouble" type="double" value="0.5"/>
+                </feature>
+            </and>
+            <alt name="Datenbank">
+                <attribute name="Latenz" type="long" unit="ms" value="20"/>
+                <feature name="MySQL">
+                    <attribute name="MAnf" type="long" unit="" value="300000"/>
+                    <attribute name="Ausfall" type="double" unit="" value="0.9"/>
+                </feature>
+                <feature name="PostgreSQL">
+                    <attribute name="MAnf" type="long" unit="" value="50000"/>
+                    <attribute name="Ausfall" type="double" unit="" value="1"/>
+                </feature>
+            </alt>
+        </and>
+    </struct>
+    <constraints>
+        <rule>
+            <imp>
+                <not>
+                    <disj>
+                        <var>HTTP</var>
+                        <var>HTTPS</var>
+                    </disj>
+                </not>
+                <var>File</var>
+            </imp>
+        </rule>
+    </constraints>
+</extendedFeatureModel>

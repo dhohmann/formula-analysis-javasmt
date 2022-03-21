@@ -161,7 +161,7 @@ public class DynamicConstraintTest {
 		final Result<?> result = analysis.getResult(rep);
 		result.orElse(Logger::logProblems);
 		assertTrue(result.isPresent());
-		assertEquals(BigInteger.valueOf(3), result.get());
+		assertEquals(BigInteger.valueOf(1), result.get());
 	}
 
 	public static Term<Long> buildIntMin(VariableMap variables, String attr, List<Formula> formulas) {
