@@ -63,13 +63,14 @@ public class DynamicConstraintTest {
 		final And ext = new And(assignments, lessThan);
 
 		Result<Formula> cnf = Formulas.toCNF(new And(formula, ext));
-		if (cnf.isPresent()) {
-			System.out.println("converted to cnf");
-			Trees.traverse(cnf.get(), new TreePrinter()).ifPresent(System.out::println);
-		}
+		// if (cnf.isPresent()) {
+		// System.out.println("converted to cnf");
+		// Trees.traverse(cnf.get(), new TreePrinter()).ifPresent(System.out::println);
+		// }
 		// Build model
 		final ModelRepresentation rep = new ModelRepresentation(new And(formula, ext));
-		Trees.traverse(rep.getFormula(), new TreePrinter()).ifPresent(System.out::println);
+		// Trees.traverse(rep.getFormula(), new
+		// TreePrinter()).ifPresent(System.out::println);
 
 		final CountSolutionsAnalysis analysis = new CountSolutionsAnalysis();
 		final Result<?> result = analysis.getResult(rep);
@@ -151,11 +152,12 @@ public class DynamicConstraintTest {
 		formulaList.add(lessThan);
 		final And ext_min = new And(formulaList);
 		final And ext = new And(assignments, ext_min);
-		System.out.println("Provided formula");
+		// System.out.println("Provided formula");
 
 		// Build model
 		final ModelRepresentation rep = new ModelRepresentation(new And(formula, ext));
-		Trees.traverse(rep.getFormula(), new TreePrinter()).ifPresent(System.out::println);
+		// Trees.traverse(rep.getFormula(), new
+		// TreePrinter()).ifPresent(System.out::println);
 
 		final CountSolutionsAnalysis analysis = new CountSolutionsAnalysis();
 		final Result<?> result = analysis.getResult(rep);
